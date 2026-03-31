@@ -3,11 +3,10 @@ import '../../data/repositories/auth_repository.dart';
 
 enum AuthState { idle, loading, otpSent, verified, error }
 
-class AuthViewModel extends ChangeNotifier {
+class AuthProvider extends ChangeNotifier {
   final AuthRepository _repository;
 
-  AuthViewModel({required AuthRepository repository})
-      : _repository = repository;
+  AuthProvider({required AuthRepository repository}) : _repository = repository;
 
   AuthState _state = AuthState.idle;
   String _errorMessage = '';
@@ -45,10 +44,7 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final success = await _repository.verifyOtp(
-        reqId: _reqId,
-        otp: otp,
-      );
+      final success = await _repository.verifyOtp(reqId: _reqId, otp: otp);
       if (success) {
         _state = AuthState.verified;
       } else {
@@ -76,11 +72,9 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void reset() {
-    _state = AuthState.idle;
-    _errorMessage = '';
-    _reqId = '';
-    _phoneNumber = '';
-    notifyListeners();
-  }
+ 
+  void resetToIdle() {
+  _state = AuthState.idle;
+  notifyListeners();
+}
 }

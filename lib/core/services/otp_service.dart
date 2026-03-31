@@ -5,10 +5,7 @@ class OtpService {
   final String widgetId;
   final String authToken;
 
-  OtpService({
-    required this.widgetId,
-    required this.authToken,
-  });
+  OtpService({required this.widgetId, required this.authToken});
 
   /// Initialize MSG91 OTP Widget
   void initialize() {
@@ -18,15 +15,12 @@ class OtpService {
   /// Send OTP → returns reqId
   Future<String?> sendOtp(String phoneNumber) async {
     try {
-      final data = {
-        'identifier': '${EnvConfig.countryCode}$phoneNumber', // country code without +
-      };
+      final data = {'identifier': '${EnvConfig.countryCode}$phoneNumber'};
 
       final response = await OTPWidget.sendOTP(data);
 
       if (response != null && response['type'] == 'success') {
-        // reqId is required for verification
-        return response['message']['reqId'];
+        return response['message'] as String; //  message IS the reqId
       } else {
         throw Exception(response?['message'] ?? 'Failed to send OTP');
       }
@@ -36,15 +30,9 @@ class OtpService {
   }
 
   /// Verify OTP using reqId + otp
-  Future<bool> verifyOtp({
-    required String reqId,
-    required String otp,
-  }) async {
+  Future<bool> verifyOtp({required String reqId, required String otp}) async {
     try {
-      final data = {
-        'reqId': reqId,
-        'otp': otp,
-      };
+      final data = {'reqId': reqId, 'otp': otp};
 
       final response = await OTPWidget.verifyOTP(data);
 
