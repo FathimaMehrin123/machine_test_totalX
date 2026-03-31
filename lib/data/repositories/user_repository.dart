@@ -19,16 +19,43 @@ class UserRepository implements UserRepositoryInterface {
   }
 
   @override
-  Future<List<UserModel>> getUsers() async {
-    try {
-      final snapshot = await _firestore.collection('users').get();
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        return UserModel.fromMap(data);
-      }).toList();
-    } catch (e) {
-      throw Exception('Failed to fetch users: $e');
+DocumentSnapshot? _lastDocument;
+bool _hasMore = true;
+bool get hasMore => _hasMore;
+
+Future<List<UserModel>> getUsers() async {
+  try {
+    Query query = _firestore
+        .collection('users')
+        .orderBy('createdAt', descending: true)
+        .limit(5);
+
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
     }
+
+    final snapshot = await query.get();
+
+    if (snapshot.docs.isEmpty || snapshot.docs.length < 5) {
+      _hasMore = false;
+    }
+
+    if (snapshot.docs.isNotEmpty) {
+      _lastDocument = snapshot.docs.last;
+    }
+
+    return snapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      data['id'] = doc.id;
+      return UserModel.fromMap(data);
+    }).toList();
+  } catch (e) {
+    throw Exception('Failed to fetch users: $e');
   }
+}
+
+void resetPagination() {
+  _lastDocument = null;
+  _hasMore = true;
+}
 }

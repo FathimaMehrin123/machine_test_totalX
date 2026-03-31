@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:machine_test_totalx/core/constants/appcolors.dart';
 
 class AddUserDialog extends StatefulWidget {
   const AddUserDialog({super.key});
@@ -13,7 +14,6 @@ class AddUserDialog extends StatefulWidget {
 class _AddUserDialogState extends State<AddUserDialog> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
 
   File? pickedImage;
 
@@ -66,6 +66,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
     final width = MediaQuery.of(context).size.width;
 
     return AlertDialog(
+      backgroundColor: AppColors.white,
       content: SizedBox(
         height: height * 0.54,
         child: SingleChildScrollView(
@@ -135,15 +136,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
               // Phone Field
               const Text(" Phone", style: TextStyle(color: Colors.grey)),
               const SizedBox(height: 4),
-              TextFormField(
-                controller: phoneController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(width * 0.03),
-                  ),
-                ),
-              ),
+            
               const SizedBox(height: 12),
 
               // Buttons
@@ -169,7 +162,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                       Navigator.pop(context, {
                         'name': nameController.text.trim(),
                         'age': ageController.text.trim(),
-                        'phone': phoneController.text.trim(),
+                       
                         'image': pickedImage,
                       });
                     },

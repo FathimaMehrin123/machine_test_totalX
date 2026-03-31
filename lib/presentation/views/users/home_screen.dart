@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:machine_test_totalx/core/constants/appcolors.dart';
 import 'package:machine_test_totalx/core/widgets/alert_dialog.dart';
@@ -17,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController searchcontroller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   int selectedAgeCategory = 0;
 
   void _showAgeFilter() {
@@ -31,6 +30,29 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Initial fetch
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserProvider>().getUsers();
+    });
+
+    // Detect scroll to bottom
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 100) {
+        context.read<UserProvider>().loadMoreUsers();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -77,7 +99,46 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 12),
             const Text("Users Lists"),
             const SizedBox(height: 8),
-            Expanded(child: ListView(children: [])),
+            Expanded(
+              child: Consumer<UserProvider>(
+                builder: (context, provider, _) {
+                  if (provider.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (provider.users.isEmpty) {
+                    return const Center(child: Text("No users found."));
+                  }
+
+                  return ListView.builder(
+                    controller: _scrollController,
+                    itemCount:
+                        provider.users.length +
+                        (provider.isFetchingMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == provider.users.length) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      final user = provider.users[index];
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: ListTile(
+                          leading: const CircleAvatar(
+                            radius: 28,
+                            child: Icon(Icons.person),
+                          ),
+                          title: Text(user.name),
+                          subtitle: Text('Age: ${user.age}'),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -91,10 +152,11 @@ class _HomeScreenState extends State<HomeScreen> {
           if (result != null) {
             final success = await context.read<UserProvider>().addUser(
               name: result['name'],
-              age: result['age'],
+              age: int.parse(result['age']),
             );
 
             if (success) {
+              context.read<UserProvider>().getUsers();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("User added successfully!")),
               );

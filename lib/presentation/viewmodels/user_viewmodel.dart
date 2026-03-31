@@ -19,6 +19,9 @@ class UserProvider extends ChangeNotifier {
   List<UserModel> _users = [];
   List<UserModel> get users => _users;
 
+  bool _isFetchingMore = false;
+bool get isFetchingMore => _isFetchingMore;
+
   Future<bool> addUser({
     required String name,
     required int age,
@@ -48,18 +51,38 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> getUsers() async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
+  _isLoading = true;
+  _errorMessage = null;
+  _users = [];
+  repository.resetPagination();
+  notifyListeners();
 
-    try {
-      _users = await repository.getUsers();
-      _isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      _isLoading = false;
-      _errorMessage = e.toString();
-      notifyListeners();
-    }
+  try {
+    _users = await repository.getUsers();
+    _isLoading = false;
+    notifyListeners();
+  } catch (e) {
+    _isLoading = false;
+    _errorMessage = e.toString();
+    notifyListeners();
   }
+}
+// Load more (pagination)
+Future<void> loadMoreUsers() async {
+  if (_isFetchingMore || !repository.hasMore) return;
+
+  _isFetchingMore = true;
+  notifyListeners();
+
+  try {
+    final newUsers = await repository.getUsers();
+    _users.addAll(newUsers);
+    _isFetchingMore = false;
+    notifyListeners();
+  } catch (e) {
+    _isFetchingMore = false;
+    _errorMessage = e.toString();
+    notifyListeners();
+  }
+}
 }

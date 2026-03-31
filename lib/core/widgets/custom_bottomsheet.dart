@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:machine_test_totalx/core/constants/appcolors.dart';
 
 class AgeBottomSheet extends StatefulWidget {
   final int selectedAgeCategory;
@@ -31,6 +32,7 @@ class _AgeBottomSheetState extends State<AgeBottomSheet> {
     return Container(
       height: height * 0.3,
       width: width * 1,
+      color: AppColors.white,
       child: Column(
         children: [
           Row(

@@ -6,6 +6,7 @@ import 'package:machine_test_totalx/core/widgets/custom_button.dart';
 import 'package:machine_test_totalx/core/widgets/custom_text.dart';
 import 'package:machine_test_totalx/core/widgets/custom_textfield.dart';
 import 'package:machine_test_totalx/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:machine_test_totalx/presentation/views/auth/otp_screen.dart';
 import 'package:machine_test_totalx/presentation/views/users/home_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handleAuthStateChange() {
     final state = context.read<AuthProvider>().state;
     if (state == AuthState.otpSent) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>HomeScreen() ,));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>OtpScreen() ,));
       context.read<AuthProvider>().resetToIdle();
     }
   }
