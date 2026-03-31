@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:machine_test_totalx/core/constants/appcolors.dart';
 import 'package:machine_test_totalx/core/constants/appstrings.dart';
 import 'package:machine_test_totalx/core/widgets/custom_button.dart';
 import 'package:machine_test_totalx/core/widgets/custom_text.dart';
 import 'package:machine_test_totalx/presentation/viewmodels/auth_viewmodel.dart';
-import 'package:machine_test_totalx/routes/app_routes.dart';
+import 'package:machine_test_totalx/presentation/views/users/home_screen.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 
@@ -37,10 +36,9 @@ class _OtpScreenState extends State<OtpScreen> {
   void _handleAuthStateChange() {
     final state = context.read<AuthProvider>().state;
     if (state == AuthState.verified) {
-      Navigator.pushNamedAndRemoveUntil(
+      Navigator.pushReplacement(
         context,
-        AppRoutes.homescreen,
-        (route) => false,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     }
   }

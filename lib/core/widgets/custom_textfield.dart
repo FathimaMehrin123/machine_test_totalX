@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final String? prefixText;
   final Widget? suffixIcon;
   final Function(String)? onChanged;
+  final double? borderradius;
 
   const CustomTextField({
     super.key,
@@ -19,6 +20,7 @@ class CustomTextField extends StatelessWidget {
     this.prefixText,
     this.suffixIcon,
     this.onChanged,
+    this.borderradius,
   });
 
   @override
@@ -43,7 +45,7 @@ class CustomTextField extends StatelessWidget {
           color: Colors.grey,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(borderradius??8),
           borderSide: const BorderSide(color: AppColors.inputBorder),
         ),
         // enabledBorder: OutlineInputBorder(

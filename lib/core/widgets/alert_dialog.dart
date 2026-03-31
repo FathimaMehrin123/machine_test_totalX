@@ -1,0 +1,196 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+class AddUserDialog extends StatefulWidget {
+  const AddUserDialog({super.key});
+
+  @override
+  State<AddUserDialog> createState() => _AddUserDialogState();
+}
+
+class _AddUserDialogState extends State<AddUserDialog> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
+  File? pickedImage;
+
+  Future<void> pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: source);
+    if (picked != null) {
+      setState(() {
+        pickedImage = File(picked.path);
+      });
+    }
+  }
+
+  void _showImageSourceSheet() {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          CupertinoActionSheet(
+            actions: [
+              CupertinoActionSheetAction(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await pickImage(ImageSource.gallery);
+                },
+                child: const Text("Choose From Gallery"),
+              ),
+              CupertinoActionSheetAction(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await pickImage(ImageSource.camera);
+                },
+                child: const Text("Camera"),
+              ),
+              CupertinoActionSheetAction(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
+    return AlertDialog(
+      content: SizedBox(
+        height: height * 0.54,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Add A New User",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+              ),
+              const SizedBox(height: 12),
+
+              // Profile Image Picker
+              Center(
+                child: InkWell(
+                  onTap: _showImageSourceSheet,
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 45,
+                        backgroundImage: pickedImage != null
+                            ? FileImage(pickedImage!) as ImageProvider
+                            :  AssetImage("assets/images/placeholder.jpg"),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: CircleAvatar(
+                          radius: 13,
+                          backgroundColor: Colors.grey,
+                          child: const Icon(Icons.camera_alt, size: 15, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Name Field
+              const Text(" Name", style: TextStyle(color: Colors.grey)),
+              const SizedBox(height: 4),
+              TextFormField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(width * 0.03),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Age Field
+              const Text(" Age", style: TextStyle(color: Colors.grey)),
+              const SizedBox(height: 4),
+              TextFormField(
+                controller: ageController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(width * 0.03),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Phone Field
+              const Text(" Phone", style: TextStyle(color: Colors.grey)),
+              const SizedBox(height: 4),
+              TextFormField(
+                controller: phoneController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(width * 0.03),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      height: height * 0.04,
+                      width: width * 0.25,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(width * 0.02),
+                      ),
+                      child: const Center(child: Text("Cancel")),
+                    ),
+                  ),
+                  SizedBox(width: width * 0.02),
+                  InkWell(
+                    onTap: () {
+                      // Pass data back to parent
+                      Navigator.pop(context, {
+                        'name': nameController.text.trim(),
+                        'age': ageController.text.trim(),
+                        'phone': phoneController.text.trim(),
+                        'image': pickedImage,
+                      });
+                    },
+                    child: Container(
+                      height: height * 0.04,
+                      width: width * 0.25,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(width * 0.02),
+                      ),
+                      child: const Center(
+                        child: Text("Save", style: TextStyle(color: Colors.white)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

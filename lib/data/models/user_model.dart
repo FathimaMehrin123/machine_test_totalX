@@ -1,33 +1,40 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 
-import 'package:machine_test_totalx/domain/entities/user_entity.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UserModel extends UserEntity {
-  const UserModel({
-    required super.phoneNumber,
-    required super.isVerified,
+class UserModel {
+  String name;
+  int age;
+  String? id;
+  Timestamp createdAt;
+  UserModel({
+    required this.name,
+    required this.age,
+    this.id,
+    required this.createdAt,
   });
+  
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      phoneNumber: json['phoneNumber'] as String,
-      isVerified: json['isVerified'] as bool? ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'phoneNumber': phoneNumber,
-      'isVerified': isVerified,
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'name': name,
+      'age': age,
+      'id': id,
+      'createdAt': createdAt,
     };
   }
 
-  UserModel copyWith({
-    String? phoneNumber,
-    bool? isVerified,
-  }) {
+  factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      isVerified: isVerified ?? this.isVerified,
+      name: map['name'] as String,
+      age: map['age'] as int,
+      id: map['id'] != null ? map['id'] as String : null,
+      createdAt: map['createdAt'] as Timestamp
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

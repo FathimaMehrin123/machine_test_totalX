@@ -1,0 +1,34 @@
+// data/repositories/user_repository.dart
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:machine_test_totalx/data/models/user_model.dart';
+import 'package:machine_test_totalx/domain/repositories/user_repository_interface.dart';
+
+class UserRepository implements UserRepositoryInterface {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  @override
+  Future<void> addUser(UserModel user) async {
+    try {
+      final id = _firestore.collection('users').doc().id;
+      user.id = id;
+      await _firestore.collection('users').doc(id).set(user.toMap());
+    } catch (e) {
+      throw Exception('Failed to add user: $e');
+    }
+  }
+
+  @override
+  Future<List<UserModel>> getUsers() async {
+    try {
+      final snapshot = await _firestore.collection('users').get();
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return UserModel.fromMap(data);
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch users: $e');
+    }
+  }
+}

@@ -24,9 +24,7 @@ class AppColors {
   
   static const Color inputFill = white;
 
-  // ── AppBar ──
-  static const Color appBarBg = black;
-  static const Color appBarText = white;
+
 
  
 
