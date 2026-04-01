@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             selectedAgeCategory = value;
           });
+          context.read<UserProvider>().sortUsers(value); 
         },
       ),
     );

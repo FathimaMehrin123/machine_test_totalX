@@ -7,7 +7,6 @@ import 'package:machine_test_totalx/core/widgets/custom_text.dart';
 import 'package:machine_test_totalx/core/widgets/custom_textfield.dart';
 import 'package:machine_test_totalx/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:machine_test_totalx/presentation/views/auth/otp_screen.dart';
-import 'package:machine_test_totalx/presentation/views/users/home_screen.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {

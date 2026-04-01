@@ -97,5 +97,21 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
- 
+ void sortUsers(int category) {
+  if (category == 0) {
+    // All - original order
+    _filteredUsers = List.from(_users);
+  } else if (category == 1) {
+    // Elder - age above 60
+    _filteredUsers = _users
+        .where((user) => user.age > 60)
+        .toList();
+  } else if (category == 2) {
+    // Younger - age below 60
+    _filteredUsers = _users
+        .where((user) => user.age < 60)
+        .toList();
+  }
+  notifyListeners();
+}
 }
