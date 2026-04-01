@@ -20,22 +20,18 @@ class UserProvider extends ChangeNotifier {
   List<UserModel> get users => _users;
 
   bool _isFetchingMore = false;
-bool get isFetchingMore => _isFetchingMore;
+  bool get isFetchingMore => _isFetchingMore;
 
-  Future<bool> addUser({
-    required String name,
-    required int age,
-  }) async {
+  List<UserModel> _filteredUsers = [];
+  List<UserModel> get filteredUsers => _filteredUsers;
+
+  Future<bool> addUser({required String name, required int age}) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final user = UserModel(
-        name: name,
-        age: age,
-        createdAt: Timestamp.now(),
-      );
+      final user = UserModel(name: name, age: age, createdAt: Timestamp.now());
 
       await repository.addUser(user);
 
@@ -51,38 +47,55 @@ bool get isFetchingMore => _isFetchingMore;
   }
 
   Future<void> getUsers() async {
-  _isLoading = true;
-  _errorMessage = null;
-  _users = [];
-  repository.resetPagination();
-  notifyListeners();
-
-  try {
-    _users = await repository.getUsers();
-    _isLoading = false;
+    _isLoading = true;
+    _errorMessage = null;
+    _users = [];
+    repository.resetPagination();
     notifyListeners();
-  } catch (e) {
-    _isLoading = false;
-    _errorMessage = e.toString();
+
+    try {
+      _users = await repository.getUsers();
+      _filteredUsers = _users; // add this
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadMoreUsers() async {
+    if (_isFetchingMore || !repository.hasMore) return;
+
+    _isFetchingMore = true;
+    notifyListeners();
+
+    try {
+      final newUsers = await repository.getUsers();
+      _users.addAll(newUsers);
+      _filteredUsers = _users; // add this
+      _isFetchingMore = false;
+      notifyListeners();
+    } catch (e) {
+      _isFetchingMore = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
+
+  void searchUsers(String query) {
+    if (query.isEmpty) {
+      _filteredUsers = _users;
+    } else {
+      _filteredUsers = _users
+          .where(
+            (user) => user.name.toLowerCase().contains(query.toLowerCase()),
+          )
+          .toList();
+    }
     notifyListeners();
   }
-}
-// Load more (pagination)
-Future<void> loadMoreUsers() async {
-  if (_isFetchingMore || !repository.hasMore) return;
 
-  _isFetchingMore = true;
-  notifyListeners();
-
-  try {
-    final newUsers = await repository.getUsers();
-    _users.addAll(newUsers);
-    _isFetchingMore = false;
-    notifyListeners();
-  } catch (e) {
-    _isFetchingMore = false;
-    _errorMessage = e.toString();
-    notifyListeners();
-  }
-}
+ 
 }

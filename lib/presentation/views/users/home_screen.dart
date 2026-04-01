@@ -40,6 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
       context.read<UserProvider>().getUsers();
     });
 
+    searchcontroller.addListener(() {
+      context.read<UserProvider>().searchUsers(searchcontroller.text);
+    });
+
     // Detect scroll to bottom
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
@@ -106,21 +110,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  if (provider.users.isEmpty) {
+                  if (provider.filteredUsers.isEmpty) {
                     return const Center(child: Text("No users found."));
                   }
 
                   return ListView.builder(
                     controller: _scrollController,
                     itemCount:
-                        provider.users.length +
+                        provider.filteredUsers.length +
                         (provider.isFetchingMore ? 1 : 0),
                     itemBuilder: (context, index) {
-                      if (index == provider.users.length) {
+                      if (index == provider.filteredUsers.length) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      final user = provider.users[index];
+                      final user = provider.filteredUsers[index];
                       return Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
