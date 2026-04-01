@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:machine_test_totalx/core/constants/appcolors.dart';
 import 'package:machine_test_totalx/core/widgets/alert_dialog.dart';
 import 'package:machine_test_totalx/core/widgets/custom_bottomsheet.dart';
+import 'package:machine_test_totalx/core/widgets/custom_text.dart';
 import 'package:machine_test_totalx/core/widgets/custom_textfield.dart';
 import 'package:machine_test_totalx/presentation/viewmodels/user_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             selectedAgeCategory = value;
           });
-          context.read<UserProvider>().sortUsers(value); 
+          context.read<UserProvider>().sortUsers(value);
         },
       ),
     );
@@ -72,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: Row(
           children: [
             Icon(Icons.location_on, color: AppColors.white),
+            SizedBox(width: 3),
             Text("Nilambur", style: TextStyle(color: AppColors.white)),
           ],
         ),
@@ -131,12 +133,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: ListTile(
-                          leading: const CircleAvatar(
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                user.profileUrl != null &&
+                                    user.profileUrl!.isNotEmpty
+                                ? NetworkImage(user.profileUrl!,)
+                                      as ImageProvider
+                                : const AssetImage(
+                                    "assets/images/placeholder.jpg",
+                                    
+                                  ),
                             radius: 28,
                             child: Icon(Icons.person),
                           ),
-                          title: Text(user.name),
-                          subtitle: Text('Age: ${user.age}'),
+                          title: CustomText(
+                            user.name,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          subtitle: CustomText(
+                            'Age: ${user.age}',
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       );
                     },
@@ -158,6 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
             final success = await context.read<UserProvider>().addUser(
               name: result['name'],
               age: int.parse(result['age']),
+              image: result['image'],
             );
 
             if (success) {

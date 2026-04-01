@@ -1,5 +1,7 @@
 // presentation/viewmodels/user_provider.dart
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:machine_test_totalx/data/models/user_model.dart';
@@ -25,7 +27,7 @@ class UserProvider extends ChangeNotifier {
   List<UserModel> _filteredUsers = [];
   List<UserModel> get filteredUsers => _filteredUsers;
 
-  Future<bool> addUser({required String name, required int age}) async {
+  Future<bool> addUser({required String name, required int age, File? image,}) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -33,7 +35,7 @@ class UserProvider extends ChangeNotifier {
     try {
       final user = UserModel(name: name, age: age, createdAt: Timestamp.now());
 
-      await repository.addUser(user);
+      await repository.addUser(user,image: image);
 
       _isLoading = false;
       notifyListeners();

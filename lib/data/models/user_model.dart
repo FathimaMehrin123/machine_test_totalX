@@ -7,11 +7,13 @@ class UserModel {
   String name;
   int age;
   String? id;
+  String? profileUrl;
   Timestamp createdAt;
   UserModel({
     required this.name,
     required this.age,
     this.id,
+    this.profileUrl,
     required this.createdAt,
   });
   
@@ -21,6 +23,7 @@ class UserModel {
       'name': name,
       'age': age,
       'id': id,
+      'profileUrl': profileUrl, 
       'createdAt': createdAt,
     };
   }
@@ -29,6 +32,7 @@ class UserModel {
     return UserModel(
       name: map['name'] as String,
       age: map['age'] as int,
+      profileUrl: map['profileUrl'], 
       id: map['id'] != null ? map['id'] as String : null,
       createdAt: map['createdAt'] as Timestamp
     );

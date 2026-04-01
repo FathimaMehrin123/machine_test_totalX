@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:machine_test_totalx/core/constants/appcolors.dart';
+import 'package:machine_test_totalx/core/widgets/custom_text.dart';
 
 class AgeBottomSheet extends StatefulWidget {
   final int selectedAgeCategory;
@@ -30,11 +31,23 @@ class _AgeBottomSheetState extends State<AgeBottomSheet> {
     final width = MediaQuery.of(context).size.width;
 
     return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+      ),
       height: height * 0.3,
       width: width * 1,
-      color: AppColors.white,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: CustomText("Sort", fontWeight: FontWeight.w600),
+          ),
           Row(
             children: [
               Radio<int>(
@@ -46,7 +59,7 @@ class _AgeBottomSheetState extends State<AgeBottomSheet> {
                   Navigator.pop(context);
                 },
               ),
-              const Text("All"),
+              const CustomText("All",fontSize: 12,fontWeight: FontWeight.w500,),
             ],
           ),
           Row(
@@ -60,7 +73,7 @@ class _AgeBottomSheetState extends State<AgeBottomSheet> {
                   Navigator.pop(context);
                 },
               ),
-              const Text("Age: Elder"),
+              const CustomText("Age: Elder",fontSize: 12,fontWeight: FontWeight.w500,),
             ],
           ),
           Row(
@@ -74,7 +87,7 @@ class _AgeBottomSheetState extends State<AgeBottomSheet> {
                   Navigator.pop(context);
                 },
               ),
-              const Text("Age: Younger"),
+              const CustomText("Age: Younger",fontSize: 12,fontWeight: FontWeight.w500),
             ],
           ),
         ],
