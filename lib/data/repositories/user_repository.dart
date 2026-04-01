@@ -4,24 +4,34 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:machine_test_totalx/data/models/user_model.dart';
 import 'package:machine_test_totalx/domain/repositories/user_repository_interface.dart';
 
 class UserRepository implements UserRepositoryInterface {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final FirebaseStorage _storage = FirebaseStorage.instance;
+
 
   @override
-  Future<void> addUser(UserModel user, {File? image}) async {
-    try {
-      final id = _firestore.collection('users').doc().id;
-      user.id = id;
-      await _firestore.collection('users').doc(id).set(user.toMap());
-    } catch (e) {
-      throw Exception('Failed to add user: $e');
-    }
-  }
+Future<void> addUser(UserModel user, {File? image}) async {
+  try {
+    final id = _firestore.collection('users').doc().id;
+    user.id = id;
 
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+    if (image != null) {
+      Fluttertoast.showToast(
+        msg: "Image upload not implemented due to billing account",
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
+
+    await _firestore.collection('users').doc(id).set(user.toMap());
+  } catch (e) {
+    throw Exception('Failed to add user: $e');
+  }
+}
+
 
 Future<String?> _uploadImage(File image,) async {
   try {

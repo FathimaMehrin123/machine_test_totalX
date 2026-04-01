@@ -22,14 +22,15 @@ class _OtpScreenState extends State<OtpScreen> {
 
   int _secondsRemaining = 59;
   Timer? _timer;
-
+  late AuthProvider authProvider;
   @override
   void initState() {
     super.initState();
     _startTimer();
     // ADD THIS
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AuthProvider>().addListener(_handleAuthStateChange);
+      authProvider = context.read<AuthProvider>();
+      authProvider.addListener(_handleAuthStateChange);
     });
   }
 
@@ -58,10 +59,10 @@ class _OtpScreenState extends State<OtpScreen> {
     setState(() => _secondsRemaining = 59);
     _startTimer();
   }
-
+ 
   @override
   void dispose() {
-    context.read<AuthProvider>().removeListener(_handleAuthStateChange);
+    authProvider.removeListener(_handleAuthStateChange);
     _pinController.dispose();
     _focusNode.dispose();
     _timer?.cancel();

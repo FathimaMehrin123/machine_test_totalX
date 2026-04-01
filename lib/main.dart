@@ -7,6 +7,7 @@ import 'package:machine_test_totalx/data/repositories/user_repository.dart';
 import 'package:machine_test_totalx/firebase_options.dart';
 import 'package:machine_test_totalx/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:machine_test_totalx/presentation/viewmodels/user_viewmodel.dart';
+import 'package:machine_test_totalx/presentation/views/auth/login_screen.dart';
 import 'package:machine_test_totalx/presentation/views/users/home_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        home: HomeScreen(),
+        home: LoginScreen(),
         debugShowCheckedModeBanner: false,
         // initialRoute: AppRoutes.login,
         // onGenerateRoute: AppRoutes.generateRoute,

@@ -18,11 +18,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _phoneController = TextEditingController();
+  late AuthProvider authProvider;
 
   @override
   void dispose() {
-    context.read<AuthProvider>().removeListener(_handleAuthStateChange);
-    _phoneController.dispose();
+  authProvider.removeListener(_handleAuthStateChange); 
+      _phoneController.dispose();
     super.dispose();
   }
 
@@ -33,7 +34,11 @@ class _LoginScreenState extends State<LoginScreen> {
       context.read<AuthProvider>().addListener(_handleAuthStateChange);
     });
   }
-
+@override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+  authProvider = context.read<AuthProvider>();
+}
   void _handleAuthStateChange() {
     final state = context.read<AuthProvider>().state;
     if (state == AuthState.otpSent) {
