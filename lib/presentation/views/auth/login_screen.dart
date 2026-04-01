@@ -116,7 +116,7 @@ void didChangeDependencies() {
                     ),
                     const TextSpan(text: ' & '),
                     TextSpan(
-                      text: AppStrings.privacy,
+                      text: "privacy policy",
                       style: const TextStyle(
                         color: AppColors.textLink,
                         fontWeight: FontWeight.w600,
@@ -133,7 +133,7 @@ void didChangeDependencies() {
 
               // Button
               CustomButton(
-                text: AppStrings.getOtp,
+                text: "Get OTP",
                 isLoading: viewModel.state == AuthState.loading,
                 onPressed: () {
                   if (_phoneController.text.length == 10) {

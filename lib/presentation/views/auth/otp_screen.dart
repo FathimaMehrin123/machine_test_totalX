@@ -59,7 +59,7 @@ class _OtpScreenState extends State<OtpScreen> {
     setState(() => _secondsRemaining = 59);
     _startTimer();
   }
- 
+
   @override
   void dispose() {
     authProvider.removeListener(_handleAuthStateChange);
@@ -116,7 +116,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
               // Title
               const CustomText(
-                AppStrings.otpTitle,
+                "OTP Verification",
 
                 fontWeight: FontWeight.w600,
               ),
@@ -166,7 +166,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       WidgetSpan(
                         alignment: PlaceholderAlignment.middle,
                         child: CustomText(
-                          AppStrings.dontGetOtp,
+                          " Don't Get OTP?",
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           color: const Color(0xFF333333),
@@ -183,7 +183,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 }
                               : null,
                           child: CustomText(
-                            AppStrings.resend,
+                            "Resend",
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             color: _secondsRemaining == 0
@@ -201,14 +201,14 @@ class _OtpScreenState extends State<OtpScreen> {
 
               // Verify button
               CustomButton(
-                text: AppStrings.verify,
+                text: 'Verify',
                 isLoading: viewModel.state == AuthState.loading,
                 onPressed: () {
                   if (_pinController.text.length == 4) {
                     context.read<AuthProvider>().verifyOtp(_pinController.text);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text(AppStrings.enterOtpError)),
+                      const SnackBar(content: Text("Enter complete OTP")),
                     );
                   }
                 },

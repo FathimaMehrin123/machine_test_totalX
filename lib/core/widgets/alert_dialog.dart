@@ -70,10 +70,10 @@ class _AddUserDialogState extends State<AddUserDialog> {
       backgroundColor: AppColors.white,
       content: SizedBox(
         height: height * 0.45,
-    width: 339,
+        width: 339,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24,horizontal: 8),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -81,8 +81,8 @@ class _AddUserDialogState extends State<AddUserDialog> {
                   "Add A New User",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                 ),
-                const SizedBox(height: 12),
-            
+                const SizedBox(height: 8),
+
                 // Profile Image Picker
                 Center(
                   child: InkWell(
@@ -93,7 +93,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                           radius: 45,
                           backgroundImage: pickedImage != null
                               ? FileImage(pickedImage!) as ImageProvider
-                              :  AssetImage("assets/images/placeholder.jpg"),
+                              : AssetImage("assets/images/placeholder.jpg"),
                         ),
                         Positioned(
                           bottom: 0,
@@ -101,34 +101,32 @@ class _AddUserDialogState extends State<AddUserDialog> {
                           child: CircleAvatar(
                             radius: 13,
                             backgroundColor: Colors.grey,
-                            child: const Icon(Icons.camera_alt, size: 15, color: Colors.white),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              size: 15,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
-            
+                const SizedBox(height: 8),
+
                 // Name Field
                 const Text(" Name", style: TextStyle(color: Colors.grey)),
                 const SizedBox(height: 4),
-             CustomTextField( controller: nameController,borderradius: 8),
-                const SizedBox(height: 8),
-            
+                CustomTextField(controller: nameController, borderradius: 8),
+                const SizedBox(height: 4),
+
                 // Age Field
                 const Text(" Age", style: TextStyle(color: Colors.grey)),
                 const SizedBox(height: 4),
-                          CustomTextField( controller: ageController,borderradius: 8,),
-            
-                const SizedBox(height: 8),
-            
-                // Phone Field
-                const Text(" Phone", style: TextStyle(color: Colors.grey)),
-                const SizedBox(height: 4),
-              
-                const SizedBox(height: 12),
-            
+                CustomTextField(controller: ageController, borderradius: 8),
+
+                const SizedBox(height: 16),
+
                 // Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -152,7 +150,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                         Navigator.pop(context, {
                           'name': nameController.text.trim(),
                           'age': ageController.text.trim(),
-                         
+
                           'image': pickedImage,
                         });
                       },
@@ -160,11 +158,14 @@ class _AddUserDialogState extends State<AddUserDialog> {
                         height: height * 0.04,
                         width: width * 0.25,
                         decoration: BoxDecoration(
-                          color:Color(0xFF1782FF),
+                          color: Color(0xFF1782FF),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Center(
-                          child: Text("Save", style: TextStyle(color: Colors.white)),
+                          child: Text(
+                            "Save",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ),

@@ -10,80 +10,77 @@ import 'package:machine_test_totalx/domain/repositories/user_repository_interfac
 
 class UserRepository implements UserRepositoryInterface {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    final FirebaseStorage _storage = FirebaseStorage.instance;
-
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   @override
-Future<void> addUser(UserModel user, {File? image}) async {
-  try {
-    final id = _firestore.collection('users').doc().id;
-    user.id = id;
+  Future<void> addUser(UserModel user, {File? image}) async {
+    try {
+      final id = _firestore.collection('users').doc().id;
+      user.id = id;
 
-    if (image != null) {
-      Fluttertoast.showToast(
-        msg: "Image upload not implemented due to billing account",
-        toastLength: Toast.LENGTH_LONG,
+      if (image != null) {
+        Fluttertoast.showToast(
+          msg: "Image upload not implemented due to billing account",
+          toastLength: Toast.LENGTH_LONG,
+        );
+      }
+
+      await _firestore.collection('users').doc(id).set(user.toMap());
+    } catch (e) {
+      throw Exception('Failed to add user: $e');
+    }
+  }
+
+  Future<String?> _uploadImage(File image) async {
+    try {
+      final ref = _storage.ref().child(
+        'profile_images/${DateTime.now().millisecondsSinceEpoch}.jpg',
       );
+      await ref.putFile(image);
+      return await ref.getDownloadURL();
+    } catch (e) {
+      return null;
     }
-
-    await _firestore.collection('users').doc(id).set(user.toMap());
-  } catch (e) {
-    throw Exception('Failed to add user: $e');
   }
-}
-
-
-Future<String?> _uploadImage(File image,) async {
-  try {
-    final ref = _storage
-        .ref()
-        .child('profile_images/${DateTime.now().millisecondsSinceEpoch}.jpg');
-    await ref.putFile(image);
-    return await ref.getDownloadURL();
-  } catch (e) {
-    return null;
-  }
-}
-
 
   @override
-DocumentSnapshot? _lastDocument;
-bool _hasMore = true;
-bool get hasMore => _hasMore;
+  DocumentSnapshot? _lastDocument;
+  bool _hasMore = true;
+  bool get hasMore => _hasMore;
 
-Future<List<UserModel>> getUsers() async {
-  try {
-    Query query = _firestore
-        .collection('users')
-        .orderBy('createdAt', descending: true)
-        .limit(5);
+  Future<List<UserModel>> getUsers() async {
+    try {
+      Query query = _firestore
+          .collection('users')
+          .orderBy('createdAt', descending: true)
+          .limit(8);
 
-    if (_lastDocument != null) {
-      query = query.startAfterDocument(_lastDocument!);
+      if (_lastDocument != null) {
+        query = query.startAfterDocument(_lastDocument!);
+      }
+
+      final snapshot = await query.get();
+
+      if (snapshot.docs.isEmpty || snapshot.docs.length < 8) {
+        _hasMore = false;
+      }
+
+      if (snapshot.docs.isNotEmpty) {
+        _lastDocument = snapshot.docs.last;
+      }
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        data['id'] = doc.id;
+        return UserModel.fromMap(data);
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch users: $e');
     }
-
-    final snapshot = await query.get();
-
-    if (snapshot.docs.isEmpty || snapshot.docs.length < 5) {
-      _hasMore = false;
-    }
-
-    if (snapshot.docs.isNotEmpty) {
-      _lastDocument = snapshot.docs.last;
-    }
-
-    return snapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
-      data['id'] = doc.id;
-      return UserModel.fromMap(data);
-    }).toList();
-  } catch (e) {
-    throw Exception('Failed to fetch users: $e');
   }
-}
 
-void resetPagination() {
-  _lastDocument = null;
-  _hasMore = true;
-}
+  void resetPagination() {
+    _lastDocument = null;
+    _hasMore = true;
+  }
 }
